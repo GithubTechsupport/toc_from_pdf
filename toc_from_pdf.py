@@ -2,6 +2,7 @@ import fitz  # PyMuPDF
 
 def extract_filtered_toc(pdf_path):
     ignore = False
+    max_level = 2
     # Non-chapter keywords to filter out (all lower case)
     non_chapter_terms = {
         "appendix", "abstract", "preface", "index",
@@ -20,7 +21,7 @@ def extract_filtered_toc(pdf_path):
             continue
         else:
             ignore = False
-        if level > 2:
+        if level > max_level:
             continue
         # Convert title to lowercase for matching
         title_lower = title.lower().strip()
@@ -33,5 +34,4 @@ def extract_filtered_toc(pdf_path):
         indent = "  " * (level - 1)
         print(f"{indent}{title} (Page {page})")
 
-# Example usage
 extract_filtered_toc("Jakki_Mohr.pdf")
