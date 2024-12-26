@@ -7,7 +7,7 @@ def extract_filtered_toc(pdf_path):
         "appendix", "abstract", "preface", "index",
         "cover", "title page", "acknowledgments",
         "about the author", "about the authors", "foreword",
-        "prologue", "summary", "glossary", "contents", "copyrights",
+        "prologue", "summary", "glossary", "contents", "copyrights", "copyright",
     }
 
     doc = fitz.open(pdf_path)
@@ -70,14 +70,24 @@ def extract_filtered_toc(pdf_path):
         partitions[i]["page_end"] = end_page
 
     # Filter out invalid partitions
-    final_partitions = [p for p in partitions if not p["invalid"]]
+    final_partitions = []
+    count = 0
+    for p in partitions:
+        if not p["invalid"]:
+            if p["chapter_level"] == 1:
+                count += 1
+            final_partitions.append(p)
+    final_partitions.append(count)
 
     # Print results for demonstration
-    for part in final_partitions:
-        indent = "  " * (part["chapter_level"] - 1)
-        print(f"{indent}{part['chapter_title']} (Start Page: {part['page_start']}, End Page: {part['page_end']})")
-
+    for i in range(len(final_partitions) - 1):
+        
+        indent = "  " * (final_partitions[i]["chapter_level"] - 1)
+        print(f"{indent}{final_partitions[i]['chapter_title']} (Start Page: {final_partitions[i]['page_start']}, End Page: {final_partitions[i]['page_end']})")
+    print("Number of main chapters: ", final_partitions[len(final_partitions)-1])
     return final_partitions
 
 # Example usage:
 partitions = extract_filtered_toc("Jakki_Mohr.pdf")
+#print(partitions)
+
